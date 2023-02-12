@@ -3,10 +3,9 @@
 #include <ESP8266WiFi.h>
 #include <RemoteXY.h>
 // настройки соединения 
-#define REMOTEXY_WIFI_SSID "kvm"
-#define REMOTEXY_WIFI_PASSWORD "75769906"
+#define REMOTEXY_WIFI_SSID "tpk"
+#define REMOTEXY_WIFI_PASSWORD "12345678"
 #define REMOTEXY_SERVER_PORT 6377
-//Serial.begin(9600);
 void savecolor(int red, int green, int blue, int arrname);
 // конфигурация интерфейса  
 #pragma pack(push, 1)
@@ -68,7 +67,6 @@ int color4_b;
 
  void savecolor(int red, int green, int blue, int arrname) 
   {
-    Serial.println(RemoteXY.select_1);
     switch(arrname) {
       case 0: {
         color1_r = red;
