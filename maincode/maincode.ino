@@ -109,9 +109,6 @@ void loop()
   digitalWrite(PIN_SWITCH_1, (RemoteXY.switch_1==0)?LOW:HIGH);
 
   // TODO you loop code
-  /* RemoteXY.led_1_r = RemoteXY.rgb_1_r;
-  RemoteXY.led_1_g = RemoteXY.rgb_1_g;
-  RemoteXY.led_1_ = RemoteXY.rgb_1_b; */
   switch(RemoteXY.select_1){
     case 0: {
       RemoteXY.led_1_r = color1_r;
