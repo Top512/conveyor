@@ -136,7 +136,6 @@ void loop()
     }
   }
   if (RemoteXY.button_1!=0) {
-    delay(300);
     savecolor(RemoteXY.rgb_1_r, RemoteXY.rgb_1_g, RemoteXY.rgb_1_b, RemoteXY.select_1);
   }
 
