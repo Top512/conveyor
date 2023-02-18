@@ -2,11 +2,20 @@
 #define REMOTEXY_MODE__ESP8266WIFI_LIB
 #include <ESP8266WiFi.h>
 #include <RemoteXY.h>
+//доп.строки
+#include "Adafruit_TCS34725.h"
+Adafruit_TCS34725 colorSensor;
+void savecolor(int red, int green, int blue, int arrname);
+struct Mystruct {
+  float r;
+  float g;
+  float b;
+};
+
 // настройки соединения 
 #define REMOTEXY_WIFI_SSID "tpk"
 #define REMOTEXY_WIFI_PASSWORD "12345678"
 #define REMOTEXY_SERVER_PORT 6377
-void savecolor(int red, int green, int blue, int arrname);
 // конфигурация интерфейса  
 #pragma pack(push, 1)
 uint8_t RemoteXY_CONF[] =   // 58 bytes
@@ -14,7 +23,7 @@ uint8_t RemoteXY_CONF[] =   // 58 bytes
   2,15,38,38,2,26,65,113,44,17,13,35,1,0,42,56,17,17,2,31,
   0,2,0,3,72,33,13,2,26,31,31,79,78,0,79,70,70,0 };
   
-// структура определяет все переменные и события вашего интерфейса управления 
+// структура определяет все переменные и события интерфейса управления 
 struct {
 
     // input variables
@@ -40,18 +49,8 @@ struct {
 //           END RemoteXY include          //
 /////////////////////////////////////////////
 
-#define PIN_SWITCH_1 D2
-#define S0 D4
-#define S1 D5
-#define S2 D6
-#define S3 D7
-#define sensorOut D8
-int redFrequency = 0;
-int greenFrequency = 0;
-int blueFrequency = 0;
-int redColor = 0;
-int greenColor = 0;
-int blueColor = 0;
+#define PIN_SWITCH_1 D2 //включение конвеера
+#define ledpin D6
 int color1_r;
 int color1_g;
 int color1_b;
@@ -64,34 +63,47 @@ int color3_b;
 int color4_r;
 int color4_g;
 int color4_b;
-
- void savecolor(int red, int green, int blue, int arrname) 
-  {
-    switch(arrname) {
-      case 0: {
-        color1_r = red;
-        color1_g = green;
-        color1_b = blue;
-      break;}
-      case 1: {
-        color2_r = red;
-        color2_g = green;
-        color2_b = blue;
-      break;}
-      case 2: {
-        color3_r = red;
-        color3_g = green;
-        color3_b = blue;
-      break;}
-      case 3: {
-        color4_r = red;
-        color4_g = green;
-        color4_b = blue;
-      break;}
-    } 
-
-  }
-
+//объявление функций
+//функция сохранения цвета
+void savecolor(int red, int green, int blue, int arrname) 
+{
+  switch(arrname) {
+    case 0: {
+      color1_r = red;
+      color1_g = green;
+      color1_b = blue;
+    break;}
+    case 1: {
+      color2_r = red;
+      color2_g = green;
+      color2_b = blue;
+    break;}
+    case 2: {
+      color3_r = red;
+      color3_g = green;
+      color3_b = blue;
+    break;}
+    case 3: {
+      color4_r = red;
+      color4_g = green;
+      color4_b = blue;
+    break;}
+  } 
+}
+//вызов датчика цвета
+Mystruct colordetect()
+{
+  digitalWrite(ledpin, HIGH);
+  float sensr, sensg, sensb;
+  delay(10);
+  colorSensor.getRGB(&sensr, &sensg, &sensb);
+  Mystruct rgb;
+  rgb.r = sensr;
+  rgb.g = sensg;
+  rgb.b = sensb;
+  digitalWrite(ledpin, LOW);
+  return rgb;
+}
 void setup() 
 {
   RemoteXY_Init (); 
@@ -100,6 +112,7 @@ void setup()
   
   // TODO you setup code 
   Serial.begin(9600);
+  Mystruct sensrbg;
 }
 
 void loop() 
@@ -109,9 +122,10 @@ void loop()
   digitalWrite(PIN_SWITCH_1, (RemoteXY.switch_1==0)?LOW:HIGH);
 
   // TODO you loop code
+  //отображение цвета в приложении
   switch(RemoteXY.select_1){
     case 0: {
-      RemoteXY.led_1_r = color1_r;
+      RemoteXY.led_1_r = color1_r; 
       RemoteXY.led_1_g = color1_g;
       RemoteXY.led_1_b = color1_b;
       break;
@@ -138,6 +152,5 @@ void loop()
   if (RemoteXY.button_1!=0) {
     savecolor(RemoteXY.rgb_1_r, RemoteXY.rgb_1_g, RemoteXY.rgb_1_b, RemoteXY.select_1);
   }
-
-
+  //код датчика цвета 
 }
