@@ -154,3 +154,4 @@ void loop()
   }
   //код датчика цвета 
 }
+//rest in peace
